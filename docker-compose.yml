@@ -30,7 +30,7 @@ services:
     networks:
       - asgard
     environment:
-      - VIRTUAL_HOST=g.a13x.co
+      - VIRTUAL_HOST=g.home.lan
       - VIRTUAL_PORT=3000
       - GITEA_CUSTOM=/etc/gitea
     depends_on: 
@@ -53,7 +53,7 @@ services:
     networks:
       - asgard
     environment:
-      - VIRTUAL_HOST=j.a13x.co
+      - VIRTUAL_HOST=j.home.lan
       - VIRTUAL_PORT=8080
     volumes:
       - type: bind
