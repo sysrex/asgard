@@ -82,5 +82,5 @@ secrets:
     file: /mnt/disks/mysql/secret.txt
 
 networks:
-  devops:
+  asgard:
     name: asgard-network
