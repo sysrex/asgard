@@ -1,0 +1,86 @@
+version: "3.5"
+
+services:
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - devops
+    environment:
+      - MYSQL_ROOT_PASSWORD=/run/secrets/db_root_password
+    volumes:
+      - type: bind
+        source: /mnt/disks/mysql/conf.d
+        target: /etc/mysql/conf.d
+      - type: bind
+        source: /mnt/disks/mysql/data
+        target: /var/lib/mysql
+    secrets:
+      - db_root_password
+    restart: always
+
+  gitea:
+    image: gitea/gitea:latest
+    container_name: gitea
+    ports:
+      - "10080:3000"
+      - "10022:22"
+    networks:
+      - devops
+    environment:
+      - VIRTUAL_HOST=g.a13x.co
+      - VIRTUAL_PORT=3000
+      - GITEA_CUSTOM=/etc/gitea
+    depends_on: 
+      - mysql
+    volumes:
+      - type: bind
+        source: /mnt/disks/gitea/data
+        target: /data
+      - type: bind
+        source: /mnt/disks/gitea/custom
+        target: /etc/gitea
+    restart: always
+
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins
+    ports:
+      - "8081:8080"
+      - "50000:5000"
+    networks:
+      - devops
+    environment:
+      - VIRTUAL_HOST=j.a13x.co
+      - VIRTUAL_PORT=8080
+    volumes:
+      - type: bind
+        source: /mnt/disks/jenkins/data
+        target: /var/jenkins_home
+    restart: always
+
+  nginx:
+      image: jwilder/nginx-proxy:alpine
+      container_name: nginx
+      ports:
+        - "80:80"
+      depends_on: 
+        - gitea
+        - jenkins
+      networks:
+        - devops
+      volumes:
+        - type: bind
+          source: /var/run/docker.sock
+          target: /tmp/docker.sock
+      restart: always
+
+secrets:
+  db_root_password:
+    file: /mnt/disks/mysql/secret.txt
+
+networks:
+  devops:
+    name: devops-network
