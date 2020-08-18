@@ -7,7 +7,7 @@ services:
     ports:
       - "3306:3306"
     networks:
-      - devops
+      - asgard
     environment:
       - MYSQL_ROOT_PASSWORD=/run/secrets/db_root_password
     volumes:
@@ -28,7 +28,7 @@ services:
       - "10080:3000"
       - "10022:22"
     networks:
-      - devops
+      - asgard
     environment:
       - VIRTUAL_HOST=g.a13x.co
       - VIRTUAL_PORT=3000
@@ -51,7 +51,7 @@ services:
       - "8081:8080"
       - "50000:5000"
     networks:
-      - devops
+      - asgard
     environment:
       - VIRTUAL_HOST=j.a13x.co
       - VIRTUAL_PORT=8080
@@ -70,7 +70,7 @@ services:
         - gitea
         - jenkins
       networks:
-        - devops
+        - asgard
       volumes:
         - type: bind
           source: /var/run/docker.sock
@@ -83,4 +83,4 @@ secrets:
 
 networks:
   devops:
-    name: devops-network
+    name: asgard-network
